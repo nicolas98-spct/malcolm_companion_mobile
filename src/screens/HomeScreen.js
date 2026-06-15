@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { getClips, getEpisodes, getUser } from '../api/api';
 import useApi from '../hooks/useApi';
 import Loader from '../components/Loader';
-import ClipCard from '../components/ClipCard';
+import HomeClipCard from '../components/HomeClipCard';
 import localImages from '../utils/localImages';
 import { impact } from '../utils/haptics';
 
@@ -48,9 +48,13 @@ export default function HomeScreen({ navigation }) {
               <Text style={{ color: '#ffc928' }}>Favoritos ★</Text>
             </Pressable>
           </View>
-          <Text style={{ fontSize: 28, fontWeight: '900', marginVertical: 16 }}>Clips Destacados</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingRight: 18 }}>
-            {data.clips.map((clip) => <ClipCard key={clip.id} clip={clip} />)}
+          <Text style={{ fontSize: 28, fontWeight: '900', marginTop: 20, marginBottom: 12 }}>Clips Destacados</Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingRight: 18, paddingBottom: 16 }}
+          >
+            {data.clips.map((clip) => <HomeClipCard key={clip.id} clip={clip} />)}
           </ScrollView>
         </View>
       </ScrollView>
