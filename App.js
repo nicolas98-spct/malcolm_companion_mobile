@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import { View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { RootNavigator } from './src/navigation';
 import { AppText } from './src/components/Typography';
@@ -27,8 +28,10 @@ export default function App() {
 
   return (
     <>
-      <RootNavigator />
-      <StatusBar style="auto" />
+      <SafeAreaProvider>
+        <RootNavigator />
+        <StatusBar style="auto" />
+      </SafeAreaProvider>
     </>
   );
 }
