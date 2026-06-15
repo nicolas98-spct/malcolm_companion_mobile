@@ -1,13 +1,59 @@
-import { Image, ScrollView, Text, TextInput, View } from 'react-native';
+import { Image, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { getClips, getEpisodes, getUser } from '../api/api';
 import useApi from '../hooks/useApi';
 import Loader from '../components/Loader';
 import ClipCard from '../components/ClipCard';
 import localImages from '../utils/localImages';
+import { impact } from '../utils/haptics';
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const { data, loading } = useApi(async () => ({ user: await getUser(), clips: await getClips(), episodes: await getEpisodes() }), []);
   if (loading || !data) return <Loader />;
-  return <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: '#d71920' }}><ScrollView style={{ flex: 1, backgroundColor: '#f1f1f1' }} contentContainerStyle={{ paddingBottom: 28 }}><View style={{ backgroundColor: '#d71920', borderBottomLeftRadius: 34, borderBottomRightRadius: 34, paddingHorizontal: 22, paddingBottom: 22, paddingTop: 14 }}><View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}><Image source={localImages.logo} resizeMode="contain" style={{ width: 150, height: 60 }} /><Image source={data.user.avatar} style={{ width: 56, height: 56, borderRadius: 28, borderWidth: 3, borderColor: '#fff' }} /></View><Text style={{ color: '#fff', fontSize: 18, marginTop: 10 }}>¡Bienvenido!</Text><Text style={{ color: '#fff', fontSize: 34, fontWeight: '900' }}>{data.user.name}</Text><TextInput placeholder="Buscar episodios, clips, personajes..." placeholderTextColor="#777" style={{ backgroundColor: '#fff', borderRadius: 999, padding: 15, marginTop: 20 }} /></View><View style={{ padding: 18 }}><View style={{ backgroundColor: '#fff', borderRadius: 28, padding: 14 }}><Image source={localImages.epGraduacion} style={{ height: 170, width: '100%', borderRadius: 22 }} /><Text style={{ fontSize: 14, color: '#d71920', fontWeight: '900', marginTop: 12 }}>Continuar viendo</Text><Text style={{ fontSize: 28, fontWeight: '900' }}>La Graduación</Text><View style={{ height: 10, backgroundColor: '#101010', borderRadius: 8, overflow: 'hidden', marginTop: 10 }}><View style={{ width: `${data.user.progress}%`, height: '100%', backgroundColor: '#ffc928' }} /></View><Text style={{ marginTop: 6, color: '#666' }}>Progreso {data.user.progress}%</Text></View><View style={{ flexDirection: 'row', gap: 12, marginTop: 16 }}><View style={{ flex: 1, backgroundColor: '#fff', borderRadius: 24, padding: 18 }}><Text style={{ fontSize: 22, fontWeight: '900' }}>Personajes</Text><Text style={{ color: '#666' }}>Guía completa</Text></View><View style={{ flex: 1, backgroundColor: '#101010', borderRadius: 24, padding: 18 }}><Text style={{ color: '#fff', fontSize: 22, fontWeight: '900' }}>Episodios</Text><Text style={{ color: '#ffc928' }}>Favoritos ★</Text></View></View><Text style={{ fontSize: 28, fontWeight: '900', marginVertical: 16 }}>Clips Destacados</Text><ScrollView horizontal showsHorizontalScrollIndicator={false}>{data.clips.map((clip) => <ClipCard key={clip.id} clip={clip} />)}</ScrollView></View></ScrollView></SafeAreaView>;
+
+  const goToTab = (screen) => {
+    impact('Light');
+    navigation.navigate(screen);
+  };
+
+  return (
+    <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: '#d71920' }}>
+      <ScrollView style={{ flex: 1, backgroundColor: '#f1f1f1' }} contentContainerStyle={{ paddingBottom: 110 }}>
+        <View style={{ backgroundColor: '#d71920', borderBottomLeftRadius: 34, borderBottomRightRadius: 34, paddingHorizontal: 22, paddingBottom: 22, paddingTop: 14 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Image source={localImages.logo} resizeMode="contain" style={{ width: 150, height: 60 }} />
+            <Image source={data.user.avatar} style={{ width: 56, height: 56, borderRadius: 28, borderWidth: 3, borderColor: '#fff' }} />
+          </View>
+          <Text style={{ color: '#fff', fontSize: 18, marginTop: 10 }}>¡Bienvenido!</Text>
+          <Text style={{ color: '#fff', fontSize: 34, fontWeight: '900' }}>{data.user.name}</Text>
+          <TextInput placeholder="Buscar episodios, clips, personajes..." placeholderTextColor="#777" style={{ backgroundColor: '#fff', borderRadius: 999, padding: 15, marginTop: 20 }} />
+        </View>
+        <View style={{ padding: 18 }}>
+          <View style={{ backgroundColor: '#fff', borderRadius: 28, padding: 14 }}>
+            <Image source={localImages.epGraduacion} style={{ height: 170, width: '100%', borderRadius: 22 }} />
+            <Text style={{ fontSize: 14, color: '#d71920', fontWeight: '900', marginTop: 12 }}>Continuar viendo</Text>
+            <Text style={{ fontSize: 28, fontWeight: '900' }}>La Graduación</Text>
+            <View style={{ height: 10, backgroundColor: '#101010', borderRadius: 8, overflow: 'hidden', marginTop: 10 }}>
+              <View style={{ width: `${data.user.progress}%`, height: '100%', backgroundColor: '#ffc928' }} />
+            </View>
+            <Text style={{ marginTop: 6, color: '#666' }}>Progreso {data.user.progress}%</Text>
+          </View>
+          <View style={{ flexDirection: 'row', gap: 12, marginTop: 16 }}>
+            <Pressable onPress={() => goToTab('Characters')} style={{ flex: 1, backgroundColor: '#fff', borderRadius: 24, padding: 18 }}>
+              <Text style={{ fontSize: 22, fontWeight: '900' }}>Personajes</Text>
+              <Text style={{ color: '#666' }}>Guía completa</Text>
+            </Pressable>
+            <Pressable onPress={() => goToTab('Episodes')} style={{ flex: 1, backgroundColor: '#101010', borderRadius: 24, padding: 18 }}>
+              <Text style={{ color: '#fff', fontSize: 22, fontWeight: '900' }}>Episodios</Text>
+              <Text style={{ color: '#ffc928' }}>Favoritos ★</Text>
+            </Pressable>
+          </View>
+          <Text style={{ fontSize: 28, fontWeight: '900', marginVertical: 16 }}>Clips Destacados</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingRight: 18 }}>
+            {data.clips.map((clip) => <ClipCard key={clip.id} clip={clip} />)}
+          </ScrollView>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
 }
