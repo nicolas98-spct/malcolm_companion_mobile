@@ -1,0 +1,3 @@
+import { Image, Pressable, Text, View } from 'react-native';
+import { impact } from '../utils/haptics';
+export default function ClipCard({ clip }) { return <Pressable className="bg-white rounded-3xl p-3 mr-3" style={{ backgroundColor: '#fff', borderRadius: 24, padding: 12, marginRight: 12, width: 210 }} onPress={() => impact('Light')}><Image source={clip.image} style={{ width: '100%', height: 105, borderRadius: 18 }} /><Text style={{ fontSize: 17, fontWeight: '900', marginTop: 10 }}>{clip.title}</Text><Text numberOfLines={2} style={{ color: '#6b7280', marginTop: 4 }}>{clip.description}</Text><Text style={{ color: '#d71920', fontWeight: '800', marginTop: 6 }}>{clip.duration}</Text></Pressable>; }

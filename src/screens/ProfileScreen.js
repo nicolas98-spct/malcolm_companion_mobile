@@ -1,5 +1,8 @@
-import ScreenContainer from './ScreenContainer';
-
-export default function ProfileScreen() {
-  return <ScreenContainer title="Perfil" description="Pantalla temporal de perfil." />;
-}
+import { Image, ScrollView, Switch, Text, View } from 'react-native';
+import { useState } from 'react';
+import { getUser } from '../api/api';
+import useApi from '../hooks/useApi';
+import Loader from '../components/Loader';
+import localImages from '../utils/localImages';
+import { impact } from '../utils/haptics';
+export default function ProfileScreen(){const[spoilers,setSpoilers]=useState(false); const{data:user,loading}=useApi(getUser,[]); if(loading||!user)return <Loader/>; const blocks=[['Episodios vistos','34/151',localImages.epHalloween],['Detrás de cámaras','Rodaje y entrevistas',localImages.btsRodaje],['Vida de los personajes','Arcos favoritos',localImages.btsEntrevista],['Memes','Dewey collection',localImages.memeDewey1]]; return <ScrollView style={{flex:1,backgroundColor:'#f1f1f1'}}><View style={{backgroundColor:'#d71920',padding:22,paddingTop:58,borderBottomLeftRadius:30,borderBottomRightRadius:30}}><Text style={{color:'#fff',fontSize:38,fontWeight:'900'}}>Perfil</Text></View><View style={{padding:18}}><View style={{backgroundColor:'#fff',borderRadius:30,padding:20,alignItems:'center'}}><Image source={user.avatar} style={{width:104,height:104,borderRadius:52}}/><Text style={{fontSize:30,fontWeight:'900',marginTop:10}}>{user.name}</Text><Text style={{color:'#666'}}>@{user.username}</Text></View><View style={{backgroundColor:'#101010',borderRadius:24,padding:18,marginTop:14,flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}><View><Text style={{color:'#fff',fontSize:20,fontWeight:'900'}}>Gestión de spoilers</Text><Text style={{color:'#aaa'}}>Haptic feedback activo</Text></View><Switch value={spoilers} onValueChange={(v)=>{impact('Heavy');setSpoilers(v)}} trackColor={{true:'#ffc928',false:'#555'}} thumbColor="#fff"/></View><Text style={{fontSize:26,fontWeight:'900',marginVertical:14}}>Resumen de actividad</Text>{blocks.map(([title,sub,img])=><View key={title} style={{backgroundColor:'#fff',borderRadius:22,padding:10,marginBottom:12,flexDirection:'row',alignItems:'center'}}><Image source={img} style={{width:88,height:70,borderRadius:16}}/><View style={{marginLeft:12,flex:1}}><Text style={{fontSize:18,fontWeight:'900'}}>{title}</Text><Text style={{color:'#666'}}>{sub}</Text></View></View>)}</View></ScrollView>}

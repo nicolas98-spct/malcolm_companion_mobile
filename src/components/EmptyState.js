@@ -1,0 +1,2 @@
+import { Text, View } from 'react-native';
+export default function EmptyState({ title = 'Sin resultados', description = 'Intenta con otra búsqueda.' }) { return <View className="bg-white rounded-3xl p-6" style={{ backgroundColor: '#fff', borderRadius: 24, padding: 24 }}><Text style={{ fontSize: 20, fontWeight: '900' }}>{title}</Text><Text style={{ color: '#666', marginTop: 6 }}>{description}</Text></View>; }
